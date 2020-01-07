@@ -1,7 +1,7 @@
 import React, {useState}from 'react';
 import './App.css';
 import Authors from './components/Authors';
-import Books from './components/Books';
+import AllBooks from './components/AllBooks';
 import AddBookForm from './components/AddBookForm';
 
 const App = () => {
@@ -14,7 +14,7 @@ const App = () => {
   }else if (page === 'addbook'){
     content = <AddBookForm />
   }else{
-    content = <Books />
+    content = <AllBooks />
   }
 
   return (

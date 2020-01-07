@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
-import FormTextField from './FormTextField';
+import { Form, FormTextField } from './FormTextField';
 import useTextField from '../hooks/useTextField';
 
 const ALL_AUTHORS = gql`
@@ -31,7 +31,7 @@ const Authors = () => {
     const nameField = useTextField('');
     const bornField = useTextField('');
     
-    if (loading){ return <div>loading...</div> }
+    if (loading || !data || !data.allAuthors){ return <div>loading...</div> }
 
     const editAuthor = () => {
         editAuthorMut({
@@ -54,15 +54,12 @@ const Authors = () => {
             </tbody>
         </table>
         <h2>Edit author</h2>
-        <form onSubmit={e => {e.preventDefault(); editAuthor();}}>
         <select {...nameField}>
             {authors.map((x,i) => <option key={i}>{x.name}</option>)}
         </select>
-        <table><tbody>
-        <FormTextField label="born" {...bornField} />
-        </tbody></table>
-        <button type='submit'>Submit</button>
-        </form>
+        <Form onSubmit={() => editAuthor()}>
+            <FormTextField label="born" {...bornField} />
+        </Form>
         </>
     );
 }
