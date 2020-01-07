@@ -6,6 +6,7 @@ import AddBookForm from './components/AddBookForm';
 
 const App = () => {
   const [page, setPage] = useState('authors');
+  const [user, setUser] = useState(null);
   
   let content = null;
   if (page === 'authors'){
@@ -22,6 +23,7 @@ const App = () => {
       <button onClick={() => setPage('authors')}>authors</button>
       <button onClick={() => setPage('books')}>books</button>
       <button onClick={() => setPage('addbook')}>add book</button>
+      <button onClick={() => setPage('login')}>login</button>
     </div>
     {content}
     </>

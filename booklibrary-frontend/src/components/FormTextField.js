@@ -1,7 +1,22 @@
 import React from 'react';
 
-const FormTextField = ({ label, value, onChange }) => {
+export const Form = ({onSubmit, children}) => {
+    return (
+        <form onSubmit={(e)=>{e.preventDefault(); onSubmit()}}>
+            <table><tbody>
+            {children}
+            </tbody></table>
+            <FormSubmitButton label="submit" />
+        </form>
+    );
+}
+
+export const FormTextField = ({ label, value, onChange }) => {
     return (<tr><td>{label}</td><td><input value={value} onChange={onChange} /></td></tr>);
 };
 
-export default FormTextField;
+export const FormSubmitButton = ({label}) => {
+    return (
+        <button type="submit">{label}</button>
+    );
+}
