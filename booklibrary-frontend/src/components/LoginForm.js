@@ -1,17 +1,8 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import {Form, FormTextField } from './FormTextField';
 import useTextField from '../hooks/useTextField';
-
-const LOGIN = gql`
-    mutation Login($username: String! $password: String!)
-    {
-        login(username:$username password:$password) 
-        {
-            value
-        }
-    }`
+import { LOGIN } from '../GraphQLPosts';
 
 const LoginForm = ({setToken}) => {
     const [loginMut] = useMutation(LOGIN, {onError: console.log});

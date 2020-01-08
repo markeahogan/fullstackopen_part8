@@ -1,26 +1,7 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import BooksList from './BooksList';
-
-const RECOMMENDED_BOOKS = gql`
-    query FindRecommendedBooks($genre: String!) {
-        allBooks(genre: $genre) {
-            title
-            author{
-                name
-            }
-            published
-        }
-    }`
-
-const ME = gql`
-    query Me {
-        me {
-            username,
-            favoriteGenre
-        }
-    }`
+import { RECOMMENDED_BOOKS, ME } from '../GraphQLPosts';
 
 const Recommendations = () =>
 {    

@@ -1,32 +1,12 @@
 import React from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { Form, FormTextField } from './FormTextField';
 import useTextField from '../hooks/useTextField';
-
-const ALL_AUTHORS = gql`
-{
-    allAuthors 
-    {
-        name
-        born
-        bookCount
-    }
-}`
-
-const EDIT_AUTHOR = gql`
-mutation EditAuthor($name: String!, $setBornTo: Int!)
-{
-    editAuthor(name: $name, setBornTo: $setBornTo) 
-    {
-        name,
-        born
-    }
-}`
+import { ALL_AUTHORS, EDIT_AUTHOR } from '../GraphQLPosts'
 
 const Authors = () => {
 
-    const {loading, data} = useQuery(ALL_AUTHORS, {pollInterval: 500});
+    const {loading, data} = useQuery(ALL_AUTHORS);
     const [editAuthorMut] = useMutation(EDIT_AUTHOR);
     const nameField = useTextField('');
     const bornField = useTextField('');
@@ -38,7 +18,8 @@ const Authors = () => {
             variables:{
                 name: nameField.value || authors[0].name,
                 setBornTo: Number.parseInt(bornField.value)
-            }
+            },
+            refetchQueries: ["AllAuthors"]
         })
     }
 

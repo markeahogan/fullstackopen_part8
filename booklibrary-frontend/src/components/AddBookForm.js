@@ -1,21 +1,8 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import useTextField from '../hooks/useTextField';
 import {Form, FormTextField } from './FormTextField';
-
-const ADD_BOOK = gql`
-    mutation AddBook($title: String!, $author: String!, $published: Int!, $genres: [String!])
-    {
-        addBook(title: $title, author: $author, published: $published, genres: $genres) 
-        {
-            title,
-            author{
-                name
-            }
-            id
-        }
-    }`
+import {ADD_BOOK } from '../GraphQLPosts';
 
 const AddBookForm = () => {
     const [addBookMut] = useMutation(ADD_BOOK);
@@ -25,12 +12,15 @@ const AddBookForm = () => {
     const genreField = useTextField();
 
     const addBook = () => {
-        addBookMut({ variables: {
-            title: titleField.value,
-            author: authorField.value,
-            published: Number.parseInt(publishedField.value),
-            genres: genreField.value.split(',')
-        }});
+        addBookMut({ 
+            variables: {
+                title: titleField.value,
+                author: authorField.value,
+                published: Number.parseInt(publishedField.value),
+                genres: genreField.value.split(',')
+            },            
+            refetchQueries: ["AllBooks", "AllAuthors"]
+        });
         titleField.clear();
         authorField.clear();
         publishedField.clear();

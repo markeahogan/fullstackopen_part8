@@ -1,23 +1,11 @@
 import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import BooksList from './BooksList';
-
-const ALL_BOOKS = gql`
-{
-    allBooks 
-    {
-        title
-        author{
-            name
-        }
-        published
-    }
-}`
+import { ALL_BOOKS } from '../GraphQLPosts';
 
 const AllBooks = () =>
 {
-    const {loading, data} = useQuery(ALL_BOOKS, { pollInterval: 500 });
+    const {loading, data} = useQuery(ALL_BOOKS);
 
     if (loading || !data){ 
         return <div>loading...</div> 
