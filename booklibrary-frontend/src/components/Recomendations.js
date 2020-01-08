@@ -38,6 +38,7 @@ const Recommendations = () =>
         return (
         <>        
             <h1>Recommendations</h1>
+            <h3>Books in your favorite genre</h3>
             <BooksList books={data.allBooks} />
         </>
         )
