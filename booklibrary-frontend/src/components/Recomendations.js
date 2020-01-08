@@ -15,7 +15,7 @@ const RECOMMENDED_BOOKS = gql`
 const Recommendations = () =>
 {    
     const {loading, data} = useQuery(RECOMMENDED_BOOKS, {
-        variables:{ genre:"test" },
+        variables:{ genre:"comedy" },
         pollInterval: 500
     });
 

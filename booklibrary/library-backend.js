@@ -99,8 +99,9 @@ const resolvers = {
   },
   Author:{
     bookCount: async (root) => {
-      return 0;
-      const books = await Book.find({author:root.name});
+      const author = await Author.findOne({name:root.name});    
+      if (!author){ return 0; }  
+      const books = await Book.find({author:author.id});
       return books.length;
     }
   },
@@ -116,7 +117,7 @@ const resolvers = {
 
       let book = new Book({...args, author:author.id});
       book = await book.save();
-      book.populate('author');
+      book = await book.populate('author');
 
       console.log(book);
 
