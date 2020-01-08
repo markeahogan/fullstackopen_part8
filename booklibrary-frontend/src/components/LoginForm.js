@@ -1,38 +1,43 @@
 import React from 'react';
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
-import {Form, FormTextField } from './components/FormTextField';
+import {Form, FormTextField } from './FormTextField';
 import useTextField from '../hooks/useTextField';
 
 const LOGIN = gql`
     mutation Login($username: String!)
     {
-        login(username: $username) 
+        login(username: $username password: $username) 
         {
-            username
+            value
         }
     }`
 
-const LoginForm = () => {
+const LoginForm = ({setToken}) => {
     const [loginMut] = useMutation(LOGIN);
     const usernameField = useTextField('');
     const passwordField = useTextField('');
 
-    const login = () => {
-        loginMut({variables:{
+    const login = async () => {
+        const result = await loginMut({variables:{
             username:usernameField.value
         }});
-        //todo actual login
-        usernameField.clear();
-        passwordField.clear();
+        
+        if (result){
+            setToken(result.data.login.value);
+            usernameField.clear();
+            passwordField.clear();
+        }
     }
 
     return (
+        <>
         <h1>Login</h1>
         <Form onSubmit={()=>login()} >
             <FormTextField label="Username" {...usernameField} />
             <FormTextField label="Password" {...passwordField} />
         </Form>
+        </>
     );
 }
 

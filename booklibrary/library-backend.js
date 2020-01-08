@@ -18,16 +18,16 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
 
 const typeDefs = gql`
   type Book {
-    title: String!,
-    published: Int!,
+    title: String!
+    published: Int!
     author: Author!
-    id: String!,
+    id: String!
     genres: [String!]
   }
 
   type Author {
-    name: String!,
-    bookCount: Int!
+    name: String
+    bookCount: Int
     born: Int
   }
 
@@ -71,6 +71,10 @@ const typeDefs = gql`
       username: String!
       password: String!
     ): Token
+
+    clear(
+      what: String
+    ): Int
   }
 `
 
@@ -110,8 +114,11 @@ const resolvers = {
       let author = await Author.findOne({name:args.author});
       if (!author){ author = await new Author({name:args.author}).save(); }
 
-      const book = new Book({...args, author});
-      await book.save();
+      let book = new Book({...args, author:author.id});
+      book = await book.save();
+      book.populate('author');
+
+      console.log(book);
 
       return book;
     },
@@ -149,6 +156,11 @@ const resolvers = {
       token = { value: jwt.sign(userForToken, JWT_SECRET) };
 
       return token;
+    },
+    clear: async () => {
+      await Book.deleteMany({});
+      await Author.deleteMany({});
+      return 1;
     }
   }
 }

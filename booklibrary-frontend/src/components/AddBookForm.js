@@ -10,7 +10,9 @@ const ADD_BOOK = gql`
         addBook(title: $title, author: $author, published: $published, genres: $genres) 
         {
             title,
-            author,
+            author{
+                name
+            }
             id
         }
     }`
