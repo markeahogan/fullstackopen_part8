@@ -1,9 +1,10 @@
-const { ApolloServer, gql, AuthenticationError, UserInputError } = require('apollo-server');
+const { ApolloServer, gql, AuthenticationError, UserInputError, PubSub } = require('apollo-server');
 const mongoose = require('mongoose');
 const Book = require('./models/book');
 const Author = require('./models/author');
 const User = require('./models/user');
 const jwt = require('jsonwebtoken');
+const pubsub = new PubSub()
 
 mongoose.set('useFindAndModify', false);
 
@@ -48,6 +49,10 @@ const typeDefs = gql`
     allAuthors: [Author!]
     me: User
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }   
 
   type Mutation {
     addBook(
@@ -94,7 +99,12 @@ const resolvers = {
       }      
       return books;
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: async () => {
+      const authors = await Author.find({});
+      const books = await Book.find({});
+      authors.forEach(x => x.bookCount = books.filter(y => y.author === x.id).length);
+      return authors;
+    },
     me: (root, args, context) => {
       return context.currentUser;
     }
@@ -106,6 +116,11 @@ const resolvers = {
       const books = await Book.find({author:author.id});
       return books.length;
     }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    },
   },
   Mutation: {
     addBook: async (root, args, context) => {
@@ -120,8 +135,8 @@ const resolvers = {
       let book = new Book({...args, author:author.id});
       book = await book.save();
       book = await book.populate('author');
-
-      console.log(book);
+      
+      pubsub.publish('BOOK_ADDED', { bookAdded: book })
 
       return book;
     },
