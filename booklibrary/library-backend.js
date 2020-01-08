@@ -83,7 +83,7 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, {author, genre}) => {
-      let books = await Book.find({});      
+      let books = await Book.find({}).populate('author');      
       const hasAuthor = !!author;
       if (hasAuthor){
         books = books.filter(x => x.author.name != author);
@@ -95,7 +95,9 @@ const resolvers = {
       return books;
     },
     allAuthors: () => Author.find({}),
-    me: (root, args, context) => context.currentUser
+    me: (root, args, context) => {
+      return context.currentUser;
+    }
   },
   Author:{
     bookCount: async (root) => {
@@ -150,12 +152,11 @@ const resolvers = {
       }
       
       const userForToken = {
-        username: user.username,
-        id: user._id
+        username: username,
+        id: user.id
       }
   
-      token = { value: jwt.sign(userForToken, JWT_SECRET) };
-
+      const token = { value: jwt.sign(userForToken, JWT_SECRET) };
       return token;
     },
     clear: async () => {
@@ -171,7 +172,7 @@ const server = new ApolloServer({
   resolvers,  
   context: async ({ req }) => {
     const auth = req ? req.headers.authorization : null;
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    if (auth && auth.toLowerCase().startsWith('bearer ') && !auth.includes('null')) {
       const decodedToken = jwt.verify( auth.substring(7), JWT_SECRET );
       const currentUser = await User.findById(decodedToken.id);
       return { currentUser };

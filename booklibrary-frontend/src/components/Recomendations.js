@@ -7,8 +7,18 @@ const RECOMMENDED_BOOKS = gql`
     query FindRecommendedBooks($genre: String!) {
         allBooks(genre: $genre) {
             title
-            author
+            author{
+                name
+            }
             published
+        }
+    }`
+
+const ME = gql`
+    query Me {
+        me {
+            username,
+            favoriteGenre
         }
     }`
 
@@ -19,7 +29,10 @@ const Recommendations = () =>
         pollInterval: 500
     });
 
-    if (loading){
+    const meQuery = useQuery(ME);
+    console.log("me", meQuery.data);
+
+    if (loading || !data){
         return <div>loading...</div>
     }else{
         return (

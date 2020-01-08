@@ -5,28 +5,30 @@ import {Form, FormTextField } from './FormTextField';
 import useTextField from '../hooks/useTextField';
 
 const LOGIN = gql`
-    mutation Login($username: String!)
+    mutation Login($username: String! $password: String!)
     {
-        login(username: $username password: $username) 
+        login(username:$username password:$password) 
         {
             value
         }
     }`
 
 const LoginForm = ({setToken}) => {
-    const [loginMut] = useMutation(LOGIN);
+    const [loginMut] = useMutation(LOGIN, {onError: console.log});
     const usernameField = useTextField('');
     const passwordField = useTextField('');
 
     const login = async () => {
         const result = await loginMut({variables:{
-            username:usernameField.value
+            username:usernameField.value,
+            password:passwordField.value
         }});
         
         if (result){
-            setToken(result.data.login.value);
             usernameField.clear();
             passwordField.clear();
+            console.log("login result", result);
+            setToken(result.data.login.value);
         }
     }
 

@@ -17,7 +17,7 @@ const ALL_BOOKS = gql`
 
 const AllBooks = () =>
 {
-    const {loading, data} = useQuery(ALL_BOOKS, {pollInterval: 500});
+    const {loading, data} = useQuery(ALL_BOOKS, { pollInterval: 500 });
 
     if (loading || !data){ 
         return <div>loading...</div> 

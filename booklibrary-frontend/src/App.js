@@ -1,4 +1,4 @@
-import React, {useState}from 'react';
+import React, {useState, useEffect}from 'react';
 import './App.css';
 import Authors from './components/Authors';
 import AllBooks from './components/AllBooks';
@@ -12,15 +12,17 @@ const App = () => {
 
   useEffect(()=>{
     const localToken = localStorage.getItem('books-user-token');
+    console.log("localtoken", localToken);
     if (localToken){
       setToken(localToken);
     }
   },[]);
 
   const login = x => {
+    console.log("network", x);
     setToken(x);
-    localStorage.setItem('books-user-token', x);
-    setPage('recommendations');
+    localStorage.setItem('books-user-token', x);    
+    setPage(x ? 'recommendations' : 'books');
   }
 
   const logout = () => {
@@ -34,7 +36,7 @@ const App = () => {
     login: <LoginForm setToken={login}/>,
     recommendations : <Recommendations />
   }
-  
+  console.log(token);
   return (
     <>
     <div>

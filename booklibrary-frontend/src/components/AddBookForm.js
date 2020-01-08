@@ -29,7 +29,7 @@ const AddBookForm = () => {
             title: titleField.value,
             author: authorField.value,
             published: Number.parseInt(publishedField.value),
-            genre: genreField.value.split(',')
+            genres: genreField.value.split(',')
         }});
         titleField.clear();
         authorField.clear();
